@@ -1,0 +1,127 @@
+from math import sqrt
+import os
+os.chdir("directory path")
+f = open("reviews.txt", "r")
+dict1 = {}
+dict2 = {}
+
+dict1 = eval(f.read())
+dict2.update(dict1.items())
+#print(dict2)
+
+def pearson_correlation(first):
+    corr_score_list = []
+    reviewers = []
+    x = []
+    y = []
+    xy = []
+    x_sq = []
+    y_sq = []
+    n = 0
+    for i in dict2:
+        if i == first:
+            pass
+            #Same Reviewer
+        else:
+            reviewers.append(i)
+            for key in dict2[first]:
+                if key in dict2[i]:
+                    n = n + 1
+                    x.append(dict2[first][key])                    
+                    y.append(dict2[i][key])                    
+                    xy.append((dict2[first][key])*(dict2[i][key]))                    
+                    x_sq.append((dict2[first][key])*(dict2[first][key]))                    
+                    y_sq.append((dict2[i][key])*(dict2[i][key]))
+            x_sum = sum(x)
+            y_sum = sum(y)
+            xy_sum = sum(xy)
+            x_sq_sum = sum(x_sq)
+            y_sq_sum = sum(y_sq)
+            numerator = float(((n*xy_sum)-(x_sum*y_sum)))
+            denominator = float(sqrt((((n*x_sq_sum)-(x_sum*x_sum))*((n*y_sq_sum)-(y_sum*y_sum)))))
+            corr_coeff = numerator/denominator            
+            corr_coefficient = round((corr_coeff),2)
+            corr_score_list.append(corr_coefficient)
+            x = []
+            y = []
+            xy = []
+            x_sq = []
+            y_sq = []
+            n = 0
+            numerator = 0
+            denominator = 0
+            corr_coeff = 0
+            corr_coefficient = 0          
+    #print("\n")
+    print("Similarity scores of %s using Pearson Correlation are as follows: \n" % first)
+    for i in range(len(reviewers)):
+        if reviewers[i] == "Reviewer_Name":
+            print("%s \t %s %s\n" %(first, reviewers[i], corr_score_list[i]))
+        elif reviewers[i] == "Peter":
+            print("%s \t %s \t\t %s\n" %(first, reviewers[i], corr_score_list[i]))
+        else:
+            print("%s \t %s \t %s\n" %(first, reviewers[i], corr_score_list[i]))
+    return
+    
+def eucledian_distance(first):
+    list_sq_diff = []
+    euc_score_list = []
+    reviewers = []
+    for i in dict2:
+        if i == first:
+            pass
+            #Same Reviewer
+        else:
+            reviewers.append(i)
+            for key in dict2[first]:
+                if key in dict2[i]:
+                    #print(i)
+                    diff= dict2[first][key] - dict2[i][key]
+                    #print(diff)
+                    sq_diff = diff * diff
+                    #print(sq_diff)
+                    list_sq_diff.append(sq_diff)
+                    #print(list_sq_diff)
+                    #print(key)
+            add = sum(list_sq_diff)
+            #print(add)
+            euc_score = sqrt(add)
+            #print(euc_score)
+            euc_score = round(euc_score,2)
+            euc_score_list.append(euc_score)
+            #print(euc_score_list)
+            list_sq_diff = []
+    print("Similarity scores of %s using Eucledian Distance are as follows: \n" % first)
+    for i in range(len(reviewers)):
+        if reviewers[i] == "Reviewer_Name":
+            print("%s \t %s %s\n" %(first, reviewers[i], euc_score_list[i]))
+        elif reviewers[i] == "Peter":
+            print("%s \t %s \t\t %s\n" %(first, reviewers[i], euc_score_list[i]))
+        else:
+            print("%s \t %s \t %s\n" %(first, reviewers[i], euc_score_list[i]))
+    return
+    
+keys1 = []
+for i in dict2:  
+    keys1.append(i)
+
+print("\t\t Reviewers List: \n")
+for i in range(len(keys1)):
+    print("\t\t %s" % keys1[i])    
+
+choice = 1
+while choice>0 and choice<3:
+    first = input("Enter the name of the reviewer whose similarity score you want to compute or Press 'y' to exit: ")
+    print("\n")
+    if first == "y":
+        break
+    else:
+        print("Select an option:\n 1. Pearson Correlation Method\n 2. Eucledian Distance Method\n 3. Press any other number to Exit")    
+        choice = int(input("Enter your choice: "))
+        #print("\n")
+        if choice == 1:
+            pearson_correlation(first)
+        elif choice == 2:
+            eucledian_distance(first)
+    
+f.close()
